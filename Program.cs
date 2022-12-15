@@ -1,7 +1,12 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using budnar_pavel_proiect_medii_de_programare.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddDbContext<budnar_pavel_proiect_medii_de_programareContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("budnar_pavel_proiect_medii_de_programareContext") ?? throw new InvalidOperationException("Connection string 'budnar_pavel_proiect_medii_de_programareContext' not found.")));
 
 var app = builder.Build();
 
