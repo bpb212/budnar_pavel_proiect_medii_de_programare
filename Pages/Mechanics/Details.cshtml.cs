@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using budnar_pavel_proiect_medii_de_programare.Data;
 using budnar_pavel_proiect_medii_de_programare.Models;
 
 namespace budnar_pavel_proiect_medii_de_programare.Pages.Mechanics
@@ -28,7 +23,12 @@ namespace budnar_pavel_proiect_medii_de_programare.Pages.Mechanics
                 return NotFound();
             }
 
-            var mechanic = await _context.Mechanic.FirstOrDefaultAsync(m => m.ID == id);
+            var mechanic = await _context.Mechanic
+                .Include(mechanic => mechanic.Team)
+                .Include(mechanic => mechanic.Role)
+                    .ThenInclude(role => role.RoleDuty)
+                    .ThenInclude(duty => duty.Duty)
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (mechanic == null)
             {
                 return NotFound();

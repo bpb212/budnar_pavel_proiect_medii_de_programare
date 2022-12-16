@@ -23,6 +23,28 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Mechanic.LastName)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Mechanic.Team)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Mechanic.Team.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Mechanic.Role)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Mechanic.Role.Name)
+        </dd>
+        <dt class="col-sm-2">
+            Duties
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (var roleDuty in Model.Mechanic.Role.RoleDuty)
+            {
+                @roleDuty.Duty.DutyName
+                <br />
+            }
+        </dd>
     </dl>
 </div>
 <div>

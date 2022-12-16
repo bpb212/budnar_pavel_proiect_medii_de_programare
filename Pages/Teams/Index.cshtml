@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{id:int?}"
 @model budnar_pavel_proiect_medii_de_programare.Pages.Teams.IndexModel
 
 @{
@@ -20,12 +20,13 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Team) {
+@foreach (var item in Model.TeamData.Teams) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
+                <a asp-page="./Index" asp-route-id="@item.ID">Select</a> |
                 <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.ID">Details</a> |
                 <a asp-page="./Delete" asp-route-id="@item.ID">Delete</a>
@@ -34,3 +35,46 @@
 }
     </tbody>
 </table>
+
+@if (Model.TeamData.Drivers != null)
+{
+    <h3>Drivers hired by selected team</h3>
+    <table class="table">
+
+        @foreach (var driver in Model.TeamData.Drivers)
+        {
+            string selectedRow = "";
+            if (driver.TeamID == Model.TeamID)
+            {
+                selectedRow = "table-success";
+            }
+            <tr class="@selectedRow">
+
+                <td>
+                    @driver.FullName
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@if (Model.TeamData.Mechanics != null)
+{
+        <h3>Mechanics hired by selected team</h3>
+        <table class="table">
+
+        @foreach (var mechanic in Model.TeamData.Mechanics)
+        {
+            string selectedRow = "";
+            if (mechanic.TeamID == Model.TeamID)
+            {
+                selectedRow = "table-success";
+            }
+            <tr class="@selectedRow">
+                <td>
+                    @mechanic.FullName
+                </td>
+            </tr>
+        }
+        </table>
+}
