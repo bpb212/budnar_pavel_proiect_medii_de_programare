@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using budnar_pavel_proiect_medii_de_programare.Data;
 using budnar_pavel_proiect_medii_de_programare.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace budnar_pavel_proiect_medii_de_programare.Pages.Drivers
 {
@@ -30,48 +25,44 @@ namespace budnar_pavel_proiect_medii_de_programare.Pages.Drivers
                 return NotFound();
             }
 
-            var driver =  await _context.Driver.FirstOrDefaultAsync(m => m.ID == id);
+            var driver =  await _context.Driver.Include(drv => drv.Team).FirstOrDefaultAsync(m => m.ID == id);
             if (driver == null)
             {
                 return NotFound();
             }
             Driver = driver;
+            ViewData["TeamID"] = new SelectList(_context.Set<Team>(), "ID", "Name");
+
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return Page();
+                return NotFound();
             }
 
-            _context.Attach(Driver).State = EntityState.Modified;
+            Driver driver = await _context.Driver
+                .Include(m => m.Team)
+                .FirstOrDefaultAsync(Driver => Driver.ID == id);
 
-            try
+            if (driver == null)
+            {
+                return NotFound();
+            }
+
+            if (await TryUpdateModelAsync<Driver>(driver, "Driver", i => i.FirstName, i => i.LastName, i => i.ShortName, i => i.TeamID))
             {
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!DriverExists(Driver.ID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return RedirectToPage("./Index");
             }
 
-            return RedirectToPage("./Index");
-        }
+            ViewData["TeamID"] = new SelectList(_context.Set<Team>(), "ID", "Name");
 
-        private bool DriverExists(int id)
-        {
-          return _context.Driver.Any(e => e.ID == id);
+            return Page();
         }
     }
 }

@@ -56,7 +56,7 @@ namespace budnar_pavel_proiect_medii_de_programare.Pages.Mechanics
                 return NotFound();
             }
 
-            if(await TryUpdateModelAsync<Mechanic>(mechanic, "Mechanic", i => i.FirstName, i => i.LastName, i => i.Role, i => i.Team))
+            if(await TryUpdateModelAsync<Mechanic>(mechanic, "Mechanic", i => i.FirstName, i => i.LastName, i => i.Role, i => i.TeamID))
             { 
                 await _context.SaveChangesAsync();
                 return RedirectToPage("./Index");

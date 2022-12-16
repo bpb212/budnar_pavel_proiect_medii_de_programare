@@ -30,6 +30,12 @@
                 <span asp-validation-for="Driver.LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Driver.TeamID" class="control-label">Publisher Name</label>
+                <select asp-for="Driver.TeamID" class="form-control" asp-items="ViewBag.TeamID">
+                </select>
+                <span asp-validation-for="Driver.TeamID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>

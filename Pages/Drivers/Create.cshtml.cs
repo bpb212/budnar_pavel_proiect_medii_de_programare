@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using budnar_pavel_proiect_medii_de_programare.Data;
 using budnar_pavel_proiect_medii_de_programare.Models;
 
 namespace budnar_pavel_proiect_medii_de_programare.Pages.Drivers
@@ -21,6 +16,7 @@ namespace budnar_pavel_proiect_medii_de_programare.Pages.Drivers
 
         public IActionResult OnGet()
         {
+            ViewData["TeamID"] = new SelectList(_context.Set<Team>(), "ID", "Name");
             return Page();
         }
 
@@ -28,18 +24,22 @@ namespace budnar_pavel_proiect_medii_de_programare.Pages.Drivers
         public Driver Driver { get; set; }
         
 
+
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid)
+            Driver newDriver = new Driver();
+
+            if (await TryUpdateModelAsync<Driver>(newDriver, "Driver", i => i.FirstName, i => i.LastName, i => i.ShortName, i => i.TeamID))
             {
-                return Page();
+                _context.Driver.Add(newDriver);
+                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
             }
 
-            _context.Driver.Add(Driver);
-            await _context.SaveChangesAsync();
+            ViewData["TeamID"] = new SelectList(_context.Set<Team>(), "ID", "Name");
 
-            return RedirectToPage("./Index");
+            return Page();
         }
     }
 }

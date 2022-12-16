@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/{id:int?}"
 @model budnar_pavel_proiect_medii_de_programare.Pages.Drivers.IndexModel
 
 @{
@@ -17,10 +17,10 @@
                 @Html.DisplayNameFor(model => model.Driver[0].ShortName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Driver[0].FirstName)
+                @Html.DisplayNameFor(model => model.Driver[0].FullName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Driver[0].LastName)
+                @Html.DisplayNameFor(model => model.Driver[0].Team.Name)
             </th>
             <th></th>
         </tr>
@@ -32,10 +32,10 @@
                 @Html.DisplayFor(modelItem => item.ShortName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
+                @Html.DisplayFor(modelItem => item.FullName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.LastName)
+                @Html.DisplayFor(modelItem => item.Team.Name)
             </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.ID">Edit</a> |

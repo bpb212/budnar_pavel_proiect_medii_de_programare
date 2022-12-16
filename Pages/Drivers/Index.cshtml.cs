@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using budnar_pavel_proiect_medii_de_programare.Data;
 using budnar_pavel_proiect_medii_de_programare.Models;
 
 namespace budnar_pavel_proiect_medii_de_programare.Pages.Drivers
@@ -25,7 +19,7 @@ namespace budnar_pavel_proiect_medii_de_programare.Pages.Drivers
         {
             if (_context.Driver != null)
             {
-                Driver = await _context.Driver.ToListAsync();
+                Driver = await _context.Driver.Include(driver => driver.Team).ToListAsync();
             }
         }
     }
