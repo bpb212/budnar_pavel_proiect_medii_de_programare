@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using budnar_pavel_proiect_medii_de_programare.Data;
 using budnar_pavel_proiect_medii_de_programare.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace budnar_pavel_proiect_medii_de_programare.Pages.Mechanics
 {
@@ -21,6 +16,8 @@ namespace budnar_pavel_proiect_medii_de_programare.Pages.Mechanics
 
         public IActionResult OnGet()
         {
+            ViewData["RoleID"] = new SelectList(_context.Set<Role>(), "ID", "Name");
+            ViewData["TeamID"] = new SelectList(_context.Set<Team>(), "ID", "Name");
             return Page();
         }
 
@@ -31,15 +28,19 @@ namespace budnar_pavel_proiect_medii_de_programare.Pages.Mechanics
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid)
+            Mechanic newMechanic = new Mechanic();
+
+            if (await TryUpdateModelAsync<Mechanic>(newMechanic, "Mechanic", i => i.FirstName, i => i.LastName, i => i.RoleID, i => i.TeamID))
             {
-                return Page();
+                _context.Mechanic.Add(newMechanic);
+                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
             }
 
-            _context.Mechanic.Add(Mechanic);
-            await _context.SaveChangesAsync();
+            ViewData["RoleID"] = new SelectList(_context.Set<Role>(), "ID", "Name");
+            ViewData["TeamID"] = new SelectList(_context.Set<Team>(), "ID", "Name");
 
-            return RedirectToPage("./Index");
+            return Page();
         }
     }
 }

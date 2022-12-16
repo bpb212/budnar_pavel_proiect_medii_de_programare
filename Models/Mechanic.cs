@@ -2,6 +2,7 @@
 {
     public class Mechanic : Employee
     {
-        public ICollection<MechanicRoles>? MechanicRoles;
+        public int RoleID { get; set; }
+        public Role? Role { get; set; }
     }
 }

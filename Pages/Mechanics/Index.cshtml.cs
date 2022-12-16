@@ -19,7 +19,10 @@ namespace budnar_pavel_proiect_medii_de_programare.Pages.Mechanics
         {
             if (_context.Mechanic != null)
             {
-                Mechanic = await _context.Mechanic.ToListAsync();
+                Mechanic = await _context.Mechanic
+                    .Include(mechanic => mechanic.Role)
+                    .Include(mechanic => mechanic.Team)
+                    .ToListAsync();
             }
         }
     }

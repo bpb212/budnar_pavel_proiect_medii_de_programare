@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using budnar_pavel_proiect_medii_de_programare.Data;
 using budnar_pavel_proiect_medii_de_programare.Models;
 
 namespace budnar_pavel_proiect_medii_de_programare.Pages.Mechanics
@@ -30,48 +25,47 @@ namespace budnar_pavel_proiect_medii_de_programare.Pages.Mechanics
                 return NotFound();
             }
 
-            var mechanic =  await _context.Mechanic.FirstOrDefaultAsync(m => m.ID == id);
+            var mechanic =  await _context.Mechanic.Include(mechanic => mechanic.Role).FirstOrDefaultAsync(m => m.ID == id);
             if (mechanic == null)
             {
                 return NotFound();
             }
             Mechanic = mechanic;
+            ViewData["RoleID"] = new SelectList(_context.Set<Role>(), "ID", "Name");
+            ViewData["TeamID"] = new SelectList(_context.Set<Team>(), "ID", "Name");
+
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return Page();
+                return NotFound();
             }
 
-            _context.Attach(Mechanic).State = EntityState.Modified;
-
-            try
+            Mechanic mechanic = await _context.Mechanic
+                .Include(m => m.Role)
+                .Include(m => m.Team)
+                .FirstOrDefaultAsync(Role=> Role.ID == id);
+            
+            if(mechanic == null)
             {
+                return NotFound();
+            }
+
+            if(await TryUpdateModelAsync<Mechanic>(mechanic, "Mechanic", i => i.FirstName, i => i.LastName, i => i.Role, i => i.Team))
+            { 
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MechanicExists(Mechanic.ID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return RedirectToPage("./Index");
             }
 
-            return RedirectToPage("./Index");
-        }
+            ViewData["RoleID"] = new SelectList(_context.Set<Role>(), "ID", "Name");
+            ViewData["TeamID"] = new SelectList(_context.Set<Team>(), "ID", "Name");
 
-        private bool MechanicExists(int id)
-        {
-          return _context.Mechanic.Any(e => e.ID == id);
+            return Page();
         }
     }
 }

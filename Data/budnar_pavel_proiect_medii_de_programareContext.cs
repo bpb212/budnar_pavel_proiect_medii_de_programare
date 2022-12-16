@@ -24,6 +24,5 @@ namespace budnar_pavel_proiect_medii_de_programare.Data
 
         public DbSet<budnar_pavel_proiect_medii_de_programare.Models.Team> Team { get; set; }
 
-        public DbSet<budnar_pavel_proiect_medii_de_programare.Models.MechanicRoles> MechanicRoles { get; set; }
     }
 }
